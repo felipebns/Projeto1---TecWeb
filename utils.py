@@ -22,3 +22,12 @@ def load_data(json_name):
 def load_template(template):
     path = f'templates/{template}'
     return open(path, mode='r+').read()
+
+def build_response(body='', code=200, reason='OK', headers=''):
+    if headers:
+        response = f"HTTP/1.1 {code} {reason}\n{headers}\n\n{body}".encode()
+
+    else:
+        response = f"HTTP/1.1 {code} {reason}\n\n{body}".encode()
+
+    return response

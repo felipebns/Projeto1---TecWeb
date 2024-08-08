@@ -1,7 +1,15 @@
 from utils import load_data, load_template
+import json
 import urllib
 
 def index(request):
+
+    note_template = load_template('components/note.html')
+    notes_li = [
+        note_template.format(title=dados['titulo'], details=dados['detalhes'])
+        for dados in load_data('notes.json')
+    ]
+    notes = '\n'.join(notes_li)
     # A string de request sempre começa com o tipo da requisição (ex: GET, POST)
     if request.startswith('POST'):
         request = request.replace('\r', '')  # Remove caracteres indesejados
@@ -18,22 +26,29 @@ def index(request):
             # AQUI É COM VOCÊ
             chave_valor = chave_valor.split('=')
             params[chave_valor[0]] = chave_valor[1]
+        params['titulo'] = urllib.parse.unquote_plus(params['titulo'], encoding='utf-8', errors='replace')
+        params['detalhes'] = urllib.parse.unquote_plus(params['detalhes'], encoding='utf-8', errors='replace')
         print(params)
 
-    # Cria uma lista de <li>'s para cada anotação
-    # Se tiver curiosidade: https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
-    note_template = load_template('components/note.html')
-    notes_li = [
-        note_template.format(title=dados['titulo'], details=dados['detalhes'])
-        for dados in load_data('notes.json')
-    ]
-    notes = '\n'.join(notes_li)
+        # Cria uma lista de <li>'s para cada anotação
+        # Se tiver curiosidade: https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
 
-    notes = notes.join(adiciona(params, notes))
+        notes = adiciona(params, note_template, notes)
+
+        with open('data/notes.json', 'r+') as f:
+            data = json.load(f)
+            data.append(params) 
+            f.seek(0)        # <--- should reset file position to the beginning.
+            json.dump(data, f, indent=4)
+            f.truncate()     # remove remaining part
+            print(f)
 
     return load_template('index.html').format(notes=notes).encode()
 
-def adiciona(params, notes):
-    notes = '\n'.join(params)
-    
-    return notes
+def adiciona(params, note_template, notes):
+    notes_usuario = [
+        note_template.format(title=params['titulo'], details=params['detalhes'])
+    ]
+    notes += '\n'.join(notes_usuario)
+
+    return urllib.parse.unquote_plus(notes, encoding='utf-8', errors='replace')
