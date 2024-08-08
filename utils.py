@@ -28,6 +28,6 @@ def build_response(body='', code=200, reason='OK', headers=''):
         response = f"HTTP/1.1 {code} {reason}\n{headers}\n\n{body}".encode()
 
     else:
-        response = f"HTTP/1.1 {code} {reason}\n\n{body}".encode()
+        response = f"HTTP/1.1 {code} {reason}\n{headers}\n\n{body}".encode()
 
     return response

@@ -1,4 +1,4 @@
-from utils import load_data, load_template
+from utils import load_data, load_template, build_response
 import json
 import urllib
 
@@ -28,7 +28,6 @@ def index(request):
             params[chave_valor[0]] = chave_valor[1]
         params['titulo'] = urllib.parse.unquote_plus(params['titulo'], encoding='utf-8', errors='replace')
         params['detalhes'] = urllib.parse.unquote_plus(params['detalhes'], encoding='utf-8', errors='replace')
-        print(params)
 
         # Cria uma lista de <li>'s para cada anotação
         # Se tiver curiosidade: https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions
@@ -41,9 +40,10 @@ def index(request):
             f.seek(0)        # <--- should reset file position to the beginning.
             json.dump(data, f, indent=4)
             f.truncate()     # remove remaining part
-            print(f)
 
-    return load_template('index.html').format(notes=notes).encode()
+        return build_response(code=303, reason='See Other', headers='Location: /')
+
+    return build_response(body=load_template('index.html').format(notes=notes))
 
 def adiciona(params, note_template, notes):
     notes_usuario = [
