@@ -11,7 +11,7 @@ class Note:
 class Database:
     def __init__(self, nome: str) -> None:
         self.nome = nome
-        self.conn = sqlite3.connect(f"{self.nome}.db")
+        self.conn = sqlite3.connect(f"Docs/data/{self.nome}.db")
         self.conn.execute("""
             CREATE TABLE IF NOT EXISTS note ( id INTEGER PRIMARY KEY,
                                             title STRING,

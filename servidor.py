@@ -1,6 +1,6 @@
 import socket
 from pathlib import Path
-from utils import extract_route, read_file, build_response, delete
+from utils import extract_route, read_file, build_response, delete, load_template
 from views import index, edit
 
 CUR_DIR = Path(__file__).parent
@@ -21,7 +21,7 @@ while True:
 
     request = client_connection.recv(1024).decode()
     print('*'*100)
-    print(request)
+    # print(request)
 
     route = extract_route(request)
     filepath = CUR_DIR / route
@@ -34,13 +34,16 @@ while True:
 
     elif route.split('/')[0] == 'update' and len(route.split('/')) == 2:
         id = route.split('/')[1]
-        response = edit(request=request, id=id)
+        response = edit(request=request, id=id) 
 
     elif route == '':
         response = index(request=request)
 
     else:
         response = build_response()
+        if route != "favicon.ico":
+            print('404')
+            response = build_response(code=404, reason='See Other', headers='Location: /') + load_template('404.html').encode()
 
     client_connection.sendall(response)
 
