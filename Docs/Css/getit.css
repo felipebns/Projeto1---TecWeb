@@ -92,6 +92,11 @@ main{
   height: 1.5rem;
   margin-top: 0.4rem;
 }
+.update{
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0.4rem;
+}
 .row{
   display: flex;
   flex-direction: row;
@@ -221,4 +226,18 @@ main{
   padding-top: 120%;
 
   transition: width 0.2s ease-out, padding-top 0.2s ease-out;
+}
+
+.cancelar{
+  background-color: rgba(163, 165, 165, 0.626);
+  width: 14rem;
+}
+
+.salvar{
+  width: 14rem;
+}
+
+.space-between{
+  display: flex;
+  justify-content: space-between;
 }

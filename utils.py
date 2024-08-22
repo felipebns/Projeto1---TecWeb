@@ -1,6 +1,4 @@
 from pathlib import Path
-import json
-import sqlite3
 from database import Database
 from database import Note
 
@@ -33,8 +31,14 @@ def build_response(body='', code=200, reason='OK', headers=''):
 
     return response
 
-def alteraDB(params):
+def add(params):
     db.add(Note(title=params['titulo'], content=params['detalhes']))
 
-def delete():
-    pass
+def delete(id):
+    db.delete(id)
+
+def get_element(id):
+    return db.get_by_id(id)
+
+def update_element(params):
+    db.update(Note(title=params['titulo'], content=params['detalhes'], id=params['id']))

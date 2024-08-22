@@ -47,4 +47,9 @@ class Database:
         """)
         self.conn.commit()
 
+    def get_by_id(self, id) -> Note:
+        elementos = self.get_all()
+        for elemento in elementos:
+            if elemento.id == int(id):
+                return elemento
 
