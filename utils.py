@@ -1,6 +1,7 @@
 from pathlib import Path
 from database import Database
 from database import Note
+from database import Popup
 
 db = Database('notes')
 
@@ -40,5 +41,18 @@ def delete(id):
 def get_element(id):
     return db.get_by_id(id)
 
+def get_titulos():
+    titulos = []
+    notes = db.get_all()
+    for note in notes:
+        titulos.append(note.title)
+    return titulos
+
 def update_element(params):
     db.update(Note(title=params['titulo'], content=params['detalhes'], id=params['id']))
+
+def get_popup():
+    return db.get_popup()
+
+def update_popup(content:str):
+    db.update_popup(Popup(id=1, content=content))

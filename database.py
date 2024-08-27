@@ -8,6 +8,11 @@ class Note:
     title: str = None
     content: str = ''
 
+@dataclass
+class Popup:
+    id: int = None
+    content: str = ''
+
 class Database:
     def __init__(self, nome: str) -> None:
         self.nome = nome
@@ -17,6 +22,17 @@ class Database:
                                             title STRING,
                                             content TEXT NOT NULL );
         """)
+        self.prepare_popup()
+
+    def prepare_popup(self):
+        self.conn.execute("""
+            CREATE TABLE IF NOT EXISTS popup (id INTEGER DEFAULT 1,
+                          content STRING);
+        """)        
+        self.conn.execute(f"""
+            INSERT INTO popup (id, content) VALUES ('1', '');
+        """)
+        self.conn.commit()
 
     def add(self, note: Note) -> None:
         self.conn.execute(f"""
@@ -52,4 +68,16 @@ class Database:
         for elemento in elementos:
             if elemento.id == int(id):
                 return elemento
+            
+    def get_popup(self):
+        cursor = self.conn.execute("SELECT content, id FROM popup")
+        for row in cursor:
+            content = row[0]
+        return content
+    
+    def update_popup(self, pop: Popup):
+        self.conn.execute(f"""
+            UPDATE popup SET content = '{pop.content}' WHERE id = 1
+        """)
+        self.conn.commit()
 

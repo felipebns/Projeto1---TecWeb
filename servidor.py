@@ -20,7 +20,7 @@ while True:
     client_connection, client_address = server_socket.accept()
 
     request = client_connection.recv(1024).decode()
-    print('*'*100)
+    # print('*'*100)
     # print(request)
 
     route = extract_route(request)
@@ -42,8 +42,10 @@ while True:
     else:
         response = build_response()
         if route != "favicon.ico":
-            print('404')
-            response = build_response(code=404, reason='See Other', headers='Location: /') + load_template('404.html').encode()
+            if request[0:4] == 'POST':
+                response = build_response(code=303, reason='See Other', headers='Location: /') + load_template('index.html').encode()
+            else:
+                response = build_response(code=404, reason='See Other', headers='Location: /') + load_template('404.html').encode()
 
     client_connection.sendall(response)
 
